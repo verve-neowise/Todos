@@ -1,6 +1,7 @@
 package com.neowise.todos.viewmodels
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.neowise.todos.dto.LoginRequest
@@ -28,6 +29,14 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     private val todosService = RetrofitFactory.todosService
 
+    private val preferences = application.applicationContext
+        .getSharedPreferences("user", Context.MODE_PRIVATE)
+
+    fun isLoggedIn(): Boolean {
+        val token = preferences.getString("token", "")
+        return token?.isNotEmpty() ?: false
+    }
+
     fun login(name: String, username: String, password: String) {
 
         val request = LoginRequest(name, username, password)
@@ -38,7 +47,9 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
                 if (response.isSuccessful) {
-                    liveData.value = LoginState.Success(response.body()!!.user)
+                    val user: User = response.body()!!.user
+                    storeUser(user)
+                    liveData.value = LoginState.Success(user)
                 }
                 else {
                     liveData.value = LoginState.Error(response.message())
@@ -49,5 +60,14 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 liveData.value = LoginState.Error(t.message ?: "Error on request")
             }
         })
+    }
+
+    fun storeUser(user: User) {
+        preferences.edit()
+            .putInt("id", user.id)
+            .putString("name", user.name)
+            .putString("username", user.username)
+            .putString("token", user.token)
+            .apply()
     }
 }

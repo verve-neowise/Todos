@@ -20,6 +20,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentLoginBinding.bind(view)
 
+        if (viewModel.isLoggedIn()) {
+            findNavController().navigate(R.id.from_login_to_todos)
+        }
+
         viewModel.liveData.observe(viewLifecycleOwner) { state ->
             when(state) {
                 is LoginState.Success -> {

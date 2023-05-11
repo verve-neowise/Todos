@@ -15,5 +15,9 @@
     <fragment
         android:id="@+id/todosFragment"
         android:name="com.neowise.todos.fragments.TodosFragment"
-        android:label="TodosFragment" />
+        android:label="TodosFragment" >
+        <action
+            android:id="@+id/from_todos_to_login"
+            app:destination="@id/loginFragment" />
+    </fragment>
 </navigation>
