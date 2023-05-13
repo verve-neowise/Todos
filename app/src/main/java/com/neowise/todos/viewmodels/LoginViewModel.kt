@@ -43,11 +43,11 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
         liveData.value = LoginState.Loading
 
-        todosService.login(request).enqueue(object : Callback<UserResponse> {
+        todosService.login(request).enqueue(object : Callback<User> {
 
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
                 if (response.isSuccessful) {
-                    val user: User = response.body()!!.user
+                    val user: User = response.body()!!
                     storeUser(user)
                     liveData.value = LoginState.Success(user)
                 }
@@ -56,7 +56,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
 
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+            override fun onFailure(call: Call<User>, t: Throwable) {
                 liveData.value = LoginState.Error(t.message ?: "Error on request")
             }
         })

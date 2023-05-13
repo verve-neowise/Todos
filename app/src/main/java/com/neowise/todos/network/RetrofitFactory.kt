@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitFactory {
 
     val retrofit = Retrofit.Builder()
-        .baseUrl("https://gusty-ahead-comb.glitch.me/api/v1/")
+        .baseUrl("http://faveo.uz:8080/api/v1/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
