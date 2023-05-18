@@ -19,5 +19,33 @@
         <action
             android:id="@+id/from_todos_to_login"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/from_todos_to_add_todo"
+            app:destination="@id/addTodoFragment" />
+        <action
+            android:id="@+id/from_todos_to_edit"
+            app:destination="@id/editTodoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addTodoFragment"
+        android:name="com.neowise.todos.fragments.AddTodoFragment"
+        android:label="AddTodoFragment" >
+        <action
+            android:id="@+id/from_add_todo_to_todos"
+            app:destination="@id/todosFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editTodoFragment"
+        android:name="com.neowise.todos.fragments.EditTodoFragment"
+        android:label="EditTodoFragment" >
+        <argument
+            android:name="id"
+            app:argType="integer" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="isCompleted"
+            app:argType="boolean" />
     </fragment>
 </navigation>

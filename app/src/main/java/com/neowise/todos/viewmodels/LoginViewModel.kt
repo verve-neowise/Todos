@@ -2,12 +2,16 @@ package com.neowise.todos.viewmodels
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.neowise.todos.dto.LoginRequest
 import com.neowise.todos.dto.User
 import com.neowise.todos.dto.UserResponse
 import com.neowise.todos.network.RetrofitFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,23 +47,24 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
         liveData.value = LoginState.Loading
 
-        todosService.login(request).enqueue(object : Callback<User> {
-
-            override fun onResponse(call: Call<User>, response: Response<User>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = todosService.login(request).execute()
                 if (response.isSuccessful) {
                     val user: User = response.body()!!
                     storeUser(user)
                     liveData.value = LoginState.Success(user)
                 }
                 else {
+                    Log.e("Login", "onResponse: ${response.message()}")
                     liveData.value = LoginState.Error(response.message())
                 }
             }
-
-            override fun onFailure(call: Call<User>, t: Throwable) {
-                liveData.value = LoginState.Error(t.message ?: "Error on request")
+            catch (e: Exception) {
+                Log.e("Login", "login: ${e.message}", )
+                liveData.value = LoginState.Error(e.message ?: "Error")
             }
-        })
+        }
     }
 
     fun storeUser(user: User) {
